@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌻 Flores Amarillas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;overflow:hidden;background:#050816;
+  font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:white;
+}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+.content{
+  position:relative;z-index:2;min-height:100vh;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:24px;pointer-events:none;
+}
+h1{
+  font-size:clamp(2.5rem,8vw,6rem);line-height:.95;
+  color:#ffd84d;text-shadow:0 0 12px #ffcf33,0 0 40px #ff9f1c;
+  animation:pulse 3s ease-in-out infinite;
+}
+p{margin-top:18px;font-size:clamp(1rem,2.5vw,1.35rem);max-width:650px;color:#fff8d6}
+button{
+  pointer-events:auto;margin-top:30px;border:1px solid #ffe477;
+  background:linear-gradient(135deg,#ffd43b,#ff9f1c);color:#351900;
+  padding:14px 24px;border-radius:999px;font-size:1rem;font-weight:800;
+  cursor:pointer;box-shadow:0 0 25px #ffbd2e80;transition:.25s;
+}
+button:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 0 40px #ffd43b}
+.hint{position:fixed;bottom:18px;z-index:3;font-size:.8rem;color:#ffffff80}
+@keyframes pulse{50%{transform:scale(1.025)}}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div class="content">
+  <h1>Flores Amarillas 🌻</h1>
+  <p>Una pequeña galaxia de flores para iluminar este día.<br>
+  Mueve el cursor y descubre cómo florece el campo.</p>
+  <button id="bloom">✨ Hacer florecer</button>
+</div>
+<div class="hint">Mueve el mouse • Toca la pantalla • Presiona “Hacer florecer”</div>
+
+<script>
+const canvas=document.getElementById("scene"),ctx=canvas.getContext("2d");
+let W,H,dpr,flowers=[],particles=[],mouse={x:-999,y:-999},time=0;
+
+function resize(){
+  dpr=Math.min(devicePixelRatio||1,2); W=innerWidth; H=innerHeight;
+  canvas.width=W*dpr; canvas.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  flowers=[];
+  const count=Math.max(18,Math.floor(W/55));
+  for(let i=0;i<count;i++) flowers.push({
+    x:(i+.5)*W/count+(Math.random()-.5)*35,
+    base:H*0.88+Math.random()*35,
+    size:20+Math.random()*35,
+    phase:Math.random()*Math.PI*2,
+    speed:.5+Math.random()*.8,
+    delay:Math.random()*2
+  });
+}
+addEventListener("resize",resize);
+addEventListener("pointermove",e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+addEventListener("pointerdown",e=>{mouse.x=e.clientX;mouse.y=e.clientY;bloom(e.clientX,e.clientY)});
+
+function bloom(x= W/2,y=H*.65){
+  for(let i=0;i<80;i++){
+    const a=Math.random()*Math.PI*2,s=1+Math.random()*5;
+    particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,
+      life:1,size:2+Math.random()*4});
+  }
+}
+
+function petal(cx,cy,r,a,rot){
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(rot);
+  ctx.beginPath();ctx.ellipse(0,-r*.48,r*.24,r*.52,0,0,Math.PI*2);
+  ctx.fillStyle="#ffd21f";ctx.shadowColor="#ffb300";ctx.shadowBlur=12;ctx.fill();
+  ctx.restore();
+}
+function drawFlower(f,i){
+  const sway=Math.sin(time*f.speed+f.phase)*7;
+  const grow=Math.min(1,Math.max(0,(time-f.delay)/1.8));
+  const x=f.x+sway,y=f.base-f.size*1.8*grow;
+  ctx.strokeStyle="#5cae42";ctx.lineWidth=4;ctx.beginPath();
+  ctx.moveTo(f.x,f.base);ctx.quadraticCurveTo(f.x+sway*.5,f.base-f.size*.9,x,y);ctx.stroke();
+
+  ctx.save();ctx.translate(x,y);ctx.scale(grow,grow);
+  for(let k=0;k<12;k++) petal(0,0,f.size,(k/12)*Math.PI*2,time*.15+f.phase);
+  ctx.beginPath();ctx.arc(0,0,f.size*.28,0,Math.PI*2);
+  ctx.fillStyle="#5b3200";ctx.shadowColor="#ffca28";ctx.shadowBlur=8;ctx.fill();
+  ctx.restore();
+
+  const dx=mouse.x-x,dy=mouse.y-y,dist=Math.hypot(dx,dy);
+  if(dist<120){
+    ctx.beginPath();ctx.arc(x,y,45,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(255,220,80,${(1-dist/120)*.35})`;ctx.stroke();
+  }
+}
+function starfield(){
+  for(let i=0;i<90;i++){
+    const x=(i*97)%W,y=(i*53)%H;
+    ctx.fillStyle=`rgba(255,255,210,${.2+.2*Math.sin(time+i)})`;
+    ctx.fillRect(x,y,1.5,1.5);
+  }
+}
+function loop(){
+  time+=.016;
+  ctx.clearRect(0,0,W,H);
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"#070b2a");g.addColorStop(.55,"#11143d");g.addColorStop(1,"#142b17");
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  starfield();
+
+  // luna
+  ctx.beginPath();ctx.arc(W*.82,H*.18,55,0,Math.PI*2);
+  ctx.fillStyle="#fff2b2";ctx.shadowColor="#ffe27a";ctx.shadowBlur=45;ctx.fill();ctx.shadowBlur=0;
+
+  flowers.forEach(drawFlower);
+
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;p.vy+=.045;p.life-=.014;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,210,40,${Math.max(0,p.life)})`;ctx.fill();
+  });
+  particles=particles.filter(p=>p.life>0);
+  requestAnimationFrame(loop);
+}
+document.getElementById("bloom").onclick=()=>bloom();
+resize();loop();
+</script>
+</body>
+</html>
