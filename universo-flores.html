@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no">
 
 <title>Flores Amarillas 🌻</title>
 
 <style>
+
+/* ==================================================
+   CONFIGURACIÓN GENERAL
+================================================== */
 
 *{
     margin:0;
@@ -15,35 +25,55 @@
     box-sizing:border-box;
 }
 
-html,body{
+html,
+body{
+
     width:100%;
     height:100%;
+
     overflow:hidden;
+
     background:#000;
+
     font-family:Arial,sans-serif;
+
     touch-action:none;
 }
 
+
+/* ==================================================
+   CANVAS
+================================================== */
+
 canvas{
+
     position:fixed;
+
     inset:0;
+
     width:100%;
     height:100%;
 }
 
-/* ======================
-   TITULO
-====================== */
+
+/* ==================================================
+   TÍTULO
+================================================== */
 
 .title{
+
     position:fixed;
+
     top:5%;
+
     left:50%;
+
     transform:translateX(-50%);
 
     color:#fff4a3;
 
-    font-size:clamp(22px,5vw,55px);
+    font-size:
+        clamp(22px,5vw,55px);
 
     text-align:center;
 
@@ -52,30 +82,51 @@ canvas{
     z-index:20;
 
     text-shadow:
+
         0 0 5px white,
+
         0 0 15px #ffe600,
+
         0 0 35px #ffbb00,
+
         0 0 60px #ff9900;
 
     animation:
         titleGlow 3s infinite alternate;
 }
 
+
+/* ==================================================
+   ANIMACIÓN DEL TÍTULO
+================================================== */
+
 @keyframes titleGlow{
 
     from{
+
         opacity:.75;
+
+        text-shadow:
+            0 0 5px white,
+            0 0 15px #ffe600,
+            0 0 30px #ffbb00;
     }
 
     to{
+
         opacity:1;
+
+        text-shadow:
+            0 0 10px white,
+            0 0 25px #ffe600,
+            0 0 50px #ff9900;
     }
 }
 
 
-/* ======================
+/* ==================================================
    MENSAJE
-====================== */
+================================================== */
 
 .message{
 
@@ -89,29 +140,33 @@ canvas{
 
     color:white;
 
-    font-size:clamp(14px,3vw,24px);
+    font-size:
+        clamp(14px,3vw,24px);
 
     text-align:center;
 
     z-index:20;
 
     text-shadow:
+
         0 0 10px #fff,
+
         0 0 20px #ffe600;
 
     opacity:.9;
 }
 
 
-/* ======================
+/* ==================================================
    CONTROLES
-====================== */
+================================================== */
 
 .controls{
 
     position:fixed;
 
     right:20px;
+
     bottom:20px;
 
     z-index:30;
@@ -125,11 +180,15 @@ canvas{
     justify-content:flex-end;
 }
 
+
 button{
 
-    border:1px solid rgba(255,220,80,.5);
+    border:
+        1px solid
+        rgba(255,220,80,.5);
 
-    background:rgba(10,10,30,.65);
+    background:
+        rgba(10,10,30,.65);
 
     color:#fff4a3;
 
@@ -144,31 +203,36 @@ button{
     font-size:14px;
 
     box-shadow:
-        0 0 10px rgba(255,220,80,.15);
+        0 0 10px
+        rgba(255,220,80,.15);
 
     transition:.2s;
 }
 
+
 button:hover{
 
-    background:rgba(255,210,50,.2);
+    background:
+        rgba(255,210,50,.2);
 
     box-shadow:
-        0 0 20px rgba(255,220,80,.5);
+        0 0 20px
+        rgba(255,220,80,.5);
 
     transform:scale(1.05);
 }
 
 
-/* ======================
-   ZOOM
-====================== */
+/* ==================================================
+   INFORMACIÓN DEL ZOOM
+================================================== */
 
 .zoomInfo{
 
     position:fixed;
 
     left:20px;
+
     bottom:20px;
 
     z-index:30;
@@ -177,7 +241,8 @@ button:hover{
 
     font-size:13px;
 
-    background:rgba(0,0,20,.5);
+    background:
+        rgba(0,0,20,.5);
 
     padding:8px 12px;
 
@@ -186,42 +251,115 @@ button:hover{
     backdrop-filter:blur(5px);
 }
 
+
+/* ==================================================
+   CELULAR
+================================================== */
+
+@media(max-width:600px){
+
+    .controls{
+
+        right:10px;
+
+        bottom:55px;
+    }
+
+    button{
+
+        padding:8px 11px;
+
+        font-size:13px;
+    }
+
+    .zoomInfo{
+
+        left:10px;
+
+        bottom:15px;
+    }
+
+}
+
 </style>
+
 </head>
+
 
 <body>
 
+
+<!-- ==================================================
+     TÍTULO
+================================================== -->
+
 <div class="title">
+
     Feliz Día de las Flores Amarillas 🌻
+
 </div>
+
+
+<!-- ==================================================
+     MENSAJE
+================================================== -->
 
 <div class="message">
+
     Acércate al universo ✨ · Explora · Descubre 🌌
+
 </div>
 
+
+<!-- ==================================================
+     ZOOM
+================================================== -->
+
 <div class="zoomInfo">
-    Zoom: <span id="zoomText">100%</span>
+
+    Zoom:
+    <span id="zoomText">100%</span>
+
 </div>
+
+
+<!-- ==================================================
+     BOTONES
+================================================== -->
 
 <div class="controls">
 
-    <button onclick="zoomIn()">＋</button>
+    <button onclick="zoomIn()">
+        ＋
+    </button>
 
-    <button onclick="zoomOut()">−</button>
+    <button onclick="zoomOut()">
+        −
+    </button>
 
-    <button onclick="resetView()">⟳</button>
+    <button onclick="resetView()">
+        ⟳
+    </button>
 
-    <button onclick="fullscreen()">⛶</button>
+    <button onclick="fullscreen()">
+        ⛶
+    </button>
 
 </div>
+
+
+<!-- ==================================================
+     CANVAS
+================================================== -->
 
 <canvas id="space"></canvas>
 
 
 <script>
 
+
 /* ==================================================
-   CONFIGURACIÓN
+   CANVAS
 ================================================== */
 
 const canvas =
@@ -230,11 +368,17 @@ const canvas =
 const ctx =
     canvas.getContext("2d");
 
+
 let W;
+
 let H;
 
+
 let DPR =
-    Math.min(window.devicePixelRatio || 1,2);
+    Math.min(
+        window.devicePixelRatio || 1,
+        2
+    );
 
 
 /* ==================================================
@@ -250,6 +394,7 @@ let camera = {
     zoom:1
 
 };
+
 
 let targetZoom = 1;
 
@@ -305,9 +450,12 @@ let lastY = 0;
 
 function resize(){
 
-    W = window.innerWidth;
+    W =
+        window.innerWidth;
 
-    H = window.innerHeight;
+    H =
+        window.innerHeight;
+
 
     canvas.width =
         W * DPR;
@@ -315,17 +463,22 @@ function resize(){
     canvas.height =
         H * DPR;
 
+
     ctx.setTransform(
+
         DPR,
         0,
         0,
         DPR,
         0,
         0
+
     );
+
 
     createEverything();
 }
+
 
 window.addEventListener(
     "resize",
@@ -339,12 +492,14 @@ window.addEventListener(
 
 function createStars(){
 
-    stars=[];
+    stars = [];
+
 
     let amount =
         Math.floor(
-            W*H/3500
+            W * H / 3500
         );
+
 
     for(
         let i=0;
@@ -355,24 +510,28 @@ function createStars(){
         stars.push({
 
             x:
-                Math.random()*W,
+                Math.random() * W,
 
             y:
-                Math.random()*H,
+                Math.random() * H,
 
             r:
-                Math.random()*1.7+.2,
+                Math.random() * 1.7 + .2,
 
             alpha:
                 Math.random(),
 
             speed:
-                Math.random()*.04,
+                Math.random() * .04,
 
             twinkle:
-                Math.random()*Math.PI*2
+                Math.random() *
+                Math.PI * 2
+
         });
+
     }
+
 }
 
 
@@ -382,9 +541,11 @@ function createStars(){
 
 function createGalaxy(){
 
-    galaxy=[];
+    galaxy = [];
 
-    const amount=9000;
+
+    const amount = 9000;
+
 
     for(
         let i=0;
@@ -393,15 +554,24 @@ function createGalaxy(){
     ){
 
         let angle =
-            Math.random()*Math.PI*2;
+            Math.random() *
+            Math.PI * 2;
+
 
         let radius =
-            50+
+
+            50 +
+
             Math.pow(
                 Math.random(),
                 .65
-            ) *
-            Math.min(W,H)*.48;
+            )
+
+            *
+
+            Math.min(W,H)
+            * .48;
+
 
         galaxy.push({
 
@@ -410,19 +580,31 @@ function createGalaxy(){
             radius:radius,
 
             speed:
-                .0008+
-                Math.random()*.003,
+
+                .0008 +
+
+                Math.random() *
+                .003,
 
             size:
-                Math.random()*1.8+.2,
+
+                Math.random() *
+                1.8 + .2,
 
             alpha:
-                Math.random()*.7+.15,
+
+                Math.random() *
+                .7 + .15,
 
             offset:
-                Math.random()*Math.PI*2
+
+                Math.random() *
+                Math.PI * 2
+
         });
+
     }
+
 }
 
 
@@ -432,13 +614,17 @@ function createGalaxy(){
 
 function createFlower(){
 
-    flower=[];
+    flower = [];
 
-    const cx=0;
 
-    const cy=-H*.22;
+    const cx = 0;
 
-    const amount=6500;
+    const cy =
+        -H * .22;
+
+
+    const amount = 6500;
+
 
     for(
         let i=0;
@@ -447,32 +633,46 @@ function createFlower(){
     ){
 
         let t =
-            Math.random()*
-            Math.PI*2;
+
+            Math.random() *
+            Math.PI * 2;
+
 
         /*
-        Fórmula de flor.
-
-        6 = número de pétalos
+        Flor de 6 pétalos
         */
 
         let petal =
+
             Math.abs(
-                Math.cos(6*t)
+                Math.cos(6 * t)
             );
 
+
         let radius =
-            40+
-            petal*150+
-            Math.random()*35;
+
+            40 +
+
+            petal * 150 +
+
+            Math.random() * 35;
+
 
         let x =
-            cx+
-            Math.cos(t)*radius;
+
+            cx +
+
+            Math.cos(t) *
+            radius;
+
 
         let y =
-            cy+
-            Math.sin(t)*radius;
+
+            cy +
+
+            Math.sin(t) *
+            radius;
+
 
         flower.push({
 
@@ -485,15 +685,24 @@ function createFlower(){
             baseY:y,
 
             size:
-                Math.random()*2.5+.5,
+
+                Math.random() *
+                2.5 + .5,
 
             alpha:
-                Math.random()*.8+.2,
+
+                Math.random() *
+                .8 + .2,
 
             phase:
-                Math.random()*Math.PI*2
+
+                Math.random() *
+                Math.PI * 2
+
         });
+
     }
+
 }
 
 
@@ -503,7 +712,8 @@ function createFlower(){
 
 function createSmallFlowers(){
 
-    smallFlowers=[];
+    smallFlowers = [];
+
 
     for(
         let i=0;
@@ -512,30 +722,45 @@ function createSmallFlowers(){
     ){
 
         let angle =
-            Math.random()*
-            Math.PI*2;
+
+            Math.random() *
+            Math.PI * 2;
+
 
         let radius =
-            250+
-            Math.random()*280;
+
+            250 +
+            Math.random() * 280;
+
 
         smallFlowers.push({
 
             x:
-                Math.cos(angle)*radius,
+
+                Math.cos(angle) *
+                radius,
 
             y:
-                H*.15+
-                Math.sin(angle)*radius*.3,
+
+                H * .15 +
+
+                Math.sin(angle) *
+                radius * .3,
 
             scale:
-                .4+
-                Math.random()*.8,
+
+                .4 +
+                Math.random() * .8,
 
             rotation:
-                Math.random()*Math.PI
+
+                Math.random() *
+                Math.PI
+
         });
+
     }
+
 }
 
 
@@ -545,33 +770,207 @@ function createSmallFlowers(){
 
 function createPlanets(){
 
-    planets=[
+    planets = [
+
+        /* 🪐 1 */
 
         {
-            x:-390,
-            y:-100,
-            r:25,
+            x:-420,
+            y:-180,
+            r:30,
             color:"#9c6bff",
             ring:true
         },
 
+
+        /* 🌍 2 */
+
         {
-            x:390,
-            y:70,
-            r:17,
-            color:"#55c7ff",
+            x:420,
+            y:90,
+            r:22,
+            color:"#38a9ff",
             ring:false
         },
 
+
+        /* 🔴 3 */
+
         {
-            x:310,
-            y:-250,
-            r:12,
+            x:330,
+            y:-280,
+            r:17,
+            color:"#ff654f",
+            ring:false
+        },
+
+
+        /* 🟢 4 */
+
+        {
+            x:-330,
+            y:180,
+            r:20,
+            color:"#55e878",
+            ring:false
+        },
+
+
+        /* 🟠 5 */
+
+        {
+            x:520,
+            y:-180,
+            r:13,
             color:"#ff9d54",
+            ring:false
+        },
+
+
+        /* 💙 6 */
+
+        {
+            x:-520,
+            y:80,
+            r:16,
+            color:"#55dfff",
+            ring:false
+        },
+
+
+        /* 🟣 7 */
+
+        {
+            x:250,
+            y:250,
+            r:11,
+            color:"#d66cff",
+            ring:false
+        },
+
+
+        /* 🟡 8 */
+
+        {
+            x:-250,
+            y:-300,
+            r:14,
+            color:"#ffd84d",
+            ring:false
+        },
+
+
+        /* 🪐 9 */
+
+        {
+            x:600,
+            y:230,
+            r:28,
+            color:"#d99b65",
+            ring:true
+        },
+
+
+        /* 🔵 10 */
+
+        {
+            x:-600,
+            y:-220,
+            r:25,
+            color:"#4169e1",
+            ring:false
+        },
+
+
+        /* 🟢 11 */
+
+        {
+            x:650,
+            y:-330,
+            r:10,
+            color:"#70e000",
+            ring:false
+        },
+
+
+        /* 🔴 12 */
+
+        {
+            x:-650,
+            y:300,
+            r:12,
+            color:"#e85d45",
+            ring:false
+        },
+
+
+        /* 🟣 13 */
+
+        {
+            x:150,
+            y:-390,
+            r:9,
+            color:"#b388ff",
+            ring:false
+        },
+
+
+        /* 🌊 14 */
+
+        {
+            x:-150,
+            y:360,
+            r:15,
+            color:"#32e0c4",
+            ring:false
+        },
+
+
+        /* 🪐 15 */
+
+        {
+            x:760,
+            y:20,
+            r:18,
+            color:"#c99b70",
+            ring:true
+        },
+
+
+        /* 🔵 16 */
+
+        {
+            x:-760,
+            y:-20,
+            r:18,
+            color:"#4dd0e1",
+            ring:false
+        },
+
+
+        /* 🔴 17 */
+
+        {
+            x:470,
+            y:350,
+            r:10,
+            color:"#ff5252",
+            ring:false
+        },
+
+
+        /* 🟢 18 */
+
+        {
+            x:-470,
+            y:-350,
+            r:13,
+            color:"#76ff03",
             ring:false
         }
 
     ];
+
 }
 
 
@@ -595,7 +994,7 @@ function createEverything(){
 
 
 /* ==================================================
-   ESTRELLAS
+   DIBUJAR ESTRELLAS
 ================================================== */
 
 function drawStars(time){
@@ -605,27 +1004,43 @@ function drawStars(time){
     ){
 
         let a =
-            .35+
+
+            .35 +
+
             Math.sin(
-                time*s.speed+
+                time * s.speed +
                 s.twinkle
-            )*.3;
+            ) * .3;
+
 
         ctx.beginPath();
 
-        ctx.fillStyle=
-            `rgba(255,255,255,${a})`;
+
+        ctx.fillStyle =
+
+            `rgba(
+                255,
+                255,
+                255,
+                ${a}
+            )`;
+
 
         ctx.arc(
+
             s.x,
             s.y,
             s.r,
             0,
-            Math.PI*2
+            Math.PI * 2
+
         );
 
+
         ctx.fill();
+
     }
+
 }
 
 
@@ -635,210 +1050,314 @@ function drawStars(time){
 
 function drawGalaxy(){
 
-    const cx=0;
+    const cx = 0;
 
-    const cy=H*.05;
+    const cy =
+        H * .05;
+
 
     for(
         const p of galaxy
     ){
 
-        p.angle+=p.speed;
+        p.angle +=
+            p.speed;
 
-        let x=
-            cx+
-            Math.cos(p.angle)*
+
+        let x =
+
+            cx +
+
+            Math.cos(
+                p.angle
+            ) *
+
             p.radius;
 
-        let y=
-            cy+
-            Math.sin(p.angle)*
-            p.radius*.35;
+
+        let y =
+
+            cy +
+
+            Math.sin(
+                p.angle
+            ) *
+
+            p.radius *
+            .35;
+
 
         /*
-        reacción al mouse
+        Reacción al mouse
         */
 
-        let dx=x-(mouse.x-W/2);
+        let dx =
+            x -
+            (mouse.x - W/2);
 
-        let dy=y-(mouse.y-H/2);
 
-        let dist=
+        let dy =
+            y -
+            (mouse.y - H/2);
+
+
+        let dist =
+
             Math.sqrt(
-                dx*dx+
+                dx*dx +
                 dy*dy
             );
 
-        if(dist<100){
 
-            x+=
-                dx/dist*
-                20;
+        if(
+            dist < 100 &&
+            dist > 0
+        ){
 
-            y+=
-                dy/dist*
-                20;
+            x +=
+                dx / dist * 20;
+
+            y +=
+                dy / dist * 20;
+
         }
+
 
         ctx.beginPath();
 
-        ctx.fillStyle=
-            `rgba(255,225,130,${p.alpha})`;
+
+        ctx.fillStyle =
+
+            `rgba(
+                255,
+                225,
+                130,
+                ${p.alpha}
+            )`;
+
 
         ctx.arc(
+
             x,
             y,
             p.size,
             0,
-            Math.PI*2
+            Math.PI * 2
+
         );
 
+
         ctx.fill();
+
     }
+
 }
 
 
 /* ==================================================
-   AGUJERO NEGRO
+   CENTRO GALÁCTICO
+   SIN CÍRCULO NEGRO
 ================================================== */
 
 function drawBlackHole(){
 
-    const cx=0;
+    const cx = 0;
 
-    const cy=H*.05;
+    const cy =
+        H * .05;
 
 
     /*
-    brillo exterior
+    ✨ Brillo exterior
     */
 
-    const glow=
+    const glow =
+
         ctx.createRadialGradient(
+
             cx,
             cy,
-            20,
+            5,
+
             cx,
             cy,
-            180
+            190
+
         );
+
 
     glow.addColorStop(
         0,
-        "rgba(255,230,120,.15)"
+        "rgba(255,250,190,.55)"
     );
 
+
     glow.addColorStop(
-        .5,
-        "rgba(255,190,40,.08)"
+        .15,
+        "rgba(255,225,90,.30)"
     );
+
+
+    glow.addColorStop(
+        .45,
+        "rgba(255,190,40,.12)"
+    );
+
 
     glow.addColorStop(
         1,
         "rgba(255,150,0,0)"
     );
 
-    ctx.fillStyle=glow;
+
+    ctx.fillStyle =
+        glow;
+
 
     ctx.beginPath();
 
+
     ctx.arc(
+
         cx,
         cy,
-        180,
+        190,
         0,
-        Math.PI*2
+        Math.PI * 2
+
     );
+
 
     ctx.fill();
 
 
     /*
-    anillos
+    🌀 Anillos
     */
 
     for(
         let i=0;
-        i<5;
+        i<7;
         i++
     ){
 
         ctx.beginPath();
+
 
         ctx.ellipse(
 
             cx,
             cy,
 
-            80+i*13,
+            70 + i * 18,
 
-            25+i*5,
-
-            0,
+            20 + i * 5,
 
             0,
-            Math.PI*2
+
+            0,
+            Math.PI * 2
+
         );
 
-        ctx.strokeStyle=
+
+        ctx.strokeStyle =
+
             `rgba(
                 255,
-                ${210-i*20},
-                70,
-                ${.25-i*.03}
+                ${235 - i * 15},
+                ${90 + i * 10},
+                ${.35 - i * .025}
             )`;
 
-        ctx.lineWidth=
-            5-i*.5;
+
+        ctx.lineWidth =
+            3 - i * .2;
+
+
+        ctx.shadowBlur = 15;
+
+
+        ctx.shadowColor =
+            "#ffd83d";
+
 
         ctx.stroke();
+
     }
 
 
+    ctx.shadowBlur = 0;
+
+
     /*
-    centro negro
+    ✨ Núcleo luminoso
     */
+
+    const centerGlow =
+
+        ctx.createRadialGradient(
+
+            cx,
+            cy,
+            0,
+
+            cx,
+            cy,
+            35
+
+        );
+
+
+    centerGlow.addColorStop(
+        0,
+        "rgba(255,255,230,1)"
+    );
+
+
+    centerGlow.addColorStop(
+        .25,
+        "rgba(255,235,100,.9)"
+    );
+
+
+    centerGlow.addColorStop(
+        .6,
+        "rgba(255,190,40,.35)"
+    );
+
+
+    centerGlow.addColorStop(
+        1,
+        "rgba(255,170,0,0)"
+    );
+
+
+    ctx.fillStyle =
+        centerGlow;
+
 
     ctx.beginPath();
 
-    ctx.fillStyle="#000";
 
     ctx.arc(
+
         cx,
         cy,
-        43,
+        35,
         0,
-        Math.PI*2
+        Math.PI * 2
+
     );
+
 
     ctx.fill();
 
-
-    /*
-    borde brillante
-    */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        cy,
-        45,
-        0,
-        Math.PI*2
-    );
-
-    ctx.strokeStyle=
-        "rgba(255,240,150,.8)";
-
-    ctx.lineWidth=2;
-
-    ctx.stroke();
 }
 
 
 /* ==================================================
-   FLOR
+   FLOR PRINCIPAL
 ================================================== */
 
 function drawFlower(time){
@@ -847,15 +1366,21 @@ function drawFlower(time){
         const p of flower
     ){
 
-        let wave=
+        let wave =
+
             Math.sin(
-                time*.002+
+
+                time * .002 +
                 p.phase
-            )*2;
+
+            ) * 2;
+
 
         ctx.beginPath();
 
-        ctx.fillStyle=
+
+        ctx.fillStyle =
+
             `rgba(
                 255,
                 225,
@@ -863,76 +1388,99 @@ function drawFlower(time){
                 ${p.alpha}
             )`;
 
-        ctx.shadowBlur=7;
 
-        ctx.shadowColor=
+        ctx.shadowBlur = 7;
+
+
+        ctx.shadowColor =
             "#ffd900";
+
 
         ctx.arc(
 
-            p.baseX+wave,
+            p.baseX + wave,
 
-            p.baseY+wave,
+            p.baseY + wave,
 
             p.size,
 
             0,
-            Math.PI*2
+            Math.PI * 2
 
         );
 
+
         ctx.fill();
+
     }
 
-    ctx.shadowBlur=0;
+
+    ctx.shadowBlur = 0;
 
 
     /*
-    centro
+    Centro de la flor
     */
 
-    const cx=0;
+    const cx = 0;
 
-    const cy=-H*.22;
+    const cy =
+        -H * .22;
 
-    const glow=
+
+    const glow =
+
         ctx.createRadialGradient(
+
             cx,
             cy,
             0,
+
             cx,
             cy,
             60
+
         );
+
 
     glow.addColorStop(
         0,
         "#fffbd0"
     );
 
+
     glow.addColorStop(
         .3,
         "#ffe83d"
     );
+
 
     glow.addColorStop(
         1,
         "rgba(255,210,0,0)"
     );
 
-    ctx.fillStyle=glow;
+
+    ctx.fillStyle =
+        glow;
+
 
     ctx.beginPath();
 
+
     ctx.arc(
+
         cx,
         cy,
         60,
         0,
-        Math.PI*2
+        Math.PI * 2
+
     );
 
+
     ctx.fill();
+
 }
 
 
@@ -948,41 +1496,50 @@ function drawSmallFlowers(){
 
         ctx.save();
 
+
         ctx.translate(
             f.x,
             f.y
         );
+
 
         ctx.scale(
             f.scale,
             f.scale
         );
 
+
         /*
-        tallo
+        🌱 Tallo
         */
 
-        ctx.strokeStyle="#49a84a";
+        ctx.strokeStyle =
+            "#49a84a";
 
-        ctx.lineWidth=5;
+
+        ctx.lineWidth = 5;
+
 
         ctx.beginPath();
+
 
         ctx.moveTo(
             0,
             15
         );
 
+
         ctx.lineTo(
             0,
             60
         );
 
+
         ctx.stroke();
 
 
         /*
-        pétalos
+        🌻 Pétalos
         */
 
         for(
@@ -991,53 +1548,76 @@ function drawSmallFlowers(){
             i++
         ){
 
-            let a=
-                i*Math.PI/4;
+            let a =
+                i * Math.PI / 4;
+
 
             ctx.save();
 
+
             ctx.rotate(a);
 
-            ctx.fillStyle="#ffd83d";
+
+            ctx.fillStyle =
+                "#ffd83d";
+
 
             ctx.beginPath();
 
+
             ctx.ellipse(
+
                 0,
                 -18,
+
                 9,
                 22,
+
                 0,
+
                 0,
-                Math.PI*2
+                Math.PI * 2
+
             );
+
 
             ctx.fill();
 
+
             ctx.restore();
+
         }
 
 
         /*
-        centro
+        Centro
         */
 
-        ctx.fillStyle="#6b3a00";
+        ctx.fillStyle =
+            "#6b3a00";
+
 
         ctx.beginPath();
 
+
         ctx.arc(
+
             0,
             0,
             10,
             0,
-            Math.PI*2
+            Math.PI * 2
+
         );
+
 
         ctx.fill();
 
+
         ctx.restore();
+
     }
+
 }
 
 
@@ -1051,68 +1631,189 @@ function drawPlanets(){
         const p of planets
     ){
 
-        const gradient=
+        /*
+        Brillo exterior
+        */
+
+        const aura =
+
             ctx.createRadialGradient(
-                p.x-p.r*.4,
-                p.y-p.r*.4,
+
+                p.x,
+                p.y,
+                p.r,
+
+                p.x,
+                p.y,
+                p.r * 2.5
+
+            );
+
+
+        aura.addColorStop(
+            0,
+            p.color.replace(
+                ")",
+                ",.15)"
+            )
+        );
+
+
+        aura.addColorStop(
+            1,
+            "rgba(0,0,0,0)"
+        );
+
+
+        /*
+        Planeta
+        */
+
+        const gradient =
+
+            ctx.createRadialGradient(
+
+                p.x - p.r*.4,
+
+                p.y - p.r*.4,
+
                 2,
+
                 p.x,
                 p.y,
                 p.r
+
             );
+
 
         gradient.addColorStop(
             0,
-            "#fff"
+            "#ffffff"
         );
+
 
         gradient.addColorStop(
             .2,
             p.color
         );
 
+
+        gradient.addColorStop(
+            .7,
+            p.color
+        );
+
+
         gradient.addColorStop(
             1,
             "#050509"
         );
 
-        ctx.fillStyle=gradient;
+
+        ctx.fillStyle =
+            gradient;
+
 
         ctx.beginPath();
 
+
         ctx.arc(
+
             p.x,
             p.y,
             p.r,
             0,
-            Math.PI*2
+            Math.PI * 2
+
         );
+
 
         ctx.fill();
 
 
-        if(p.ring){
+        /*
+        🪐 Anillo
+        */
+
+        if(
+            p.ring
+        ){
 
             ctx.beginPath();
 
+
             ctx.ellipse(
+
                 p.x,
                 p.y,
-                p.r*1.8,
-                p.r*.5,
+
+                p.r * 1.8,
+
+                p.r * .5,
+
                 -.2,
+
                 0,
-                Math.PI*2
+                Math.PI * 2
+
             );
 
-            ctx.strokeStyle=
-                "rgba(220,180,255,.6)";
 
-            ctx.lineWidth=3;
+            ctx.strokeStyle =
+
+                "rgba(230,200,150,.75)";
+
+
+            ctx.lineWidth = 3;
+
+
+            ctx.shadowBlur = 8;
+
+
+            ctx.shadowColor =
+                p.color;
+
 
             ctx.stroke();
+
+
+            ctx.shadowBlur = 0;
+
         }
+
+
+        /*
+        ✨ Punto de luz
+        */
+
+        ctx.beginPath();
+
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.7)";
+
+
+        ctx.arc(
+
+            p.x - p.r*.35,
+
+            p.y - p.r*.35,
+
+            Math.max(
+                1.5,
+                p.r*.12
+            ),
+
+            0,
+            Math.PI * 2
+
+        );
+
+
+        ctx.fill();
+
     }
+
 }
 
 
@@ -1125,93 +1826,142 @@ function spawnShootingStar(){
     shootingStars.push({
 
         x:
-            Math.random()*W,
+            Math.random() * W,
 
         y:
-            Math.random()*H*.5,
+            Math.random() * H * .5,
 
         speed:
-            8+
-            Math.random()*8,
+
+            8 +
+            Math.random() * 8,
 
         life:1,
 
         length:
-            60+
-            Math.random()*100
+
+            60 +
+            Math.random() * 100
+
     });
+
 }
 
 
 function drawShootingStars(){
 
     if(
-        Math.random()<.008
+        Math.random() < .008
     ){
 
         spawnShootingStar();
+
     }
 
 
     for(
-        let i=
-        shootingStars.length-1;
-        i>=0;
+        let i =
+            shootingStars.length - 1;
+
+        i >= 0;
+
         i--
     ){
 
-        let s=
+        let s =
             shootingStars[i];
 
-        s.x+=s.speed;
 
-        s.y+=s.speed*.35;
+        s.x +=
+            s.speed;
 
-        s.life-=.015;
+
+        s.y +=
+            s.speed * .35;
+
+
+        s.life -= .015;
 
 
         ctx.beginPath();
 
-        const gradient=
+
+        const gradient =
+
             ctx.createLinearGradient(
+
                 s.x,
                 s.y,
-                s.x-s.length,
-                s.y-s.length*.35
+
+                s.x - s.length,
+                s.y -
+                s.length*.35
+
             );
 
+
         gradient.addColorStop(
+
             0,
-            `rgba(255,255,255,${s.life})`
+
+            `rgba(
+                255,
+                255,
+                255,
+                ${s.life}
+            )`
+
         );
+
 
         gradient.addColorStop(
+
             1,
+
             "rgba(255,255,255,0)"
+
         );
 
-        ctx.strokeStyle=gradient;
 
-        ctx.lineWidth=2;
+        ctx.strokeStyle =
+            gradient;
+
+
+        ctx.lineWidth = 2;
+
 
         ctx.moveTo(
             s.x,
             s.y
         );
 
+
         ctx.lineTo(
-            s.x-s.length,
-            s.y-s.length*.35
+
+            s.x - s.length,
+
+            s.y -
+            s.length*.35
+
         );
+
 
         ctx.stroke();
 
 
-        if(s.life<=0){
+        if(
+            s.life <= 0
+        ){
 
-            shootingStars.splice(i,1);
+            shootingStars.splice(
+                i,
+                1
+            );
+
         }
+
     }
+
 }
 
 
@@ -1219,7 +1969,10 @@ function drawShootingStars(){
    CORAZONES
 ================================================== */
 
-function createHeart(x,y){
+function createHeart(
+    x,
+    y
+){
 
     for(
         let i=0;
@@ -1242,145 +1995,207 @@ function createHeart(x,y){
             life:1,
 
             size:
-                8+
+                8 +
                 Math.random()*10
+
         });
+
     }
+
 }
 
 
 function drawHearts(){
 
     for(
-        let i=hearts.length-1;
-        i>=0;
+        let i =
+            hearts.length - 1;
+
+        i >= 0;
+
         i--
     ){
 
-        let h=
+        let h =
             hearts[i];
 
-        h.x+=h.vx;
 
-        h.y+=h.vy;
+        h.x +=
+            h.vx;
 
-        h.vy-=.01;
 
-        h.life-=.015;
+        h.y +=
+            h.vy;
+
+
+        h.vy -= .01;
+
+
+        h.life -= .015;
 
 
         ctx.save();
 
-        ctx.globalAlpha=h.life;
 
-        ctx.fillStyle="#ffd83d";
+        ctx.globalAlpha =
+            h.life;
 
-        ctx.font=
+
+        ctx.fillStyle =
+            "#ffd83d";
+
+
+        ctx.font =
             `${h.size}px Arial`;
 
+
         ctx.fillText(
+
             "♥",
+
             h.x,
             h.y
+
         );
+
 
         ctx.restore();
 
 
         if(
-            h.life<=0
+            h.life <= 0
         ){
 
-            hearts.splice(i,1);
+            hearts.splice(
+                i,
+                1
+            );
+
         }
+
     }
+
 }
 
 
 /* ==================================================
-   TRANSFORMACIÓN DE CÁMARA
+   CÁMARA
 ================================================== */
 
 function applyCamera(){
 
     ctx.translate(
-        W/2+camera.x,
-        H/2+camera.y
+
+        W/2 + camera.x,
+
+        H/2 + camera.y
+
     );
 
+
     ctx.scale(
+
         camera.zoom,
+
         camera.zoom
+
     );
 
 }
 
 
 /* ==================================================
-   ANIMACIÓN
+   ANIMACIÓN PRINCIPAL
 ================================================== */
 
 function animate(time){
 
     /*
-    fondo
+    Fondo
     */
 
     ctx.setTransform(
+
         DPR,
         0,
         0,
         DPR,
         0,
         0
+
     );
 
-    ctx.fillStyle="#02020d";
+
+    ctx.fillStyle =
+        "#02020d";
+
 
     ctx.fillRect(
+
         0,
         0,
         W,
         H
+
     );
 
 
     /*
-    estrellas
+    Estrellas
     */
 
     drawStars(time);
 
 
     /*
-    cámara
+    Cámara
     */
 
     ctx.save();
 
+
     camera.zoom +=
-        (targetZoom-camera.zoom)*.08;
+
+        (
+            targetZoom -
+            camera.zoom
+        ) * .08;
+
 
     camera.x +=
-        (targetX-camera.x)*.08;
+
+        (
+            targetX -
+            camera.x
+        ) * .08;
+
 
     camera.y +=
-        (targetY-camera.y)*.08;
+
+        (
+            targetY -
+            camera.y
+        ) * .08;
+
 
     applyCamera();
 
 
     /*
-    universo
+    Universo
     */
 
     drawGalaxy();
 
+
     drawPlanets();
+
 
     drawBlackHole();
 
+
     drawFlower(time);
+
 
     drawSmallFlowers();
 
@@ -1389,61 +2204,85 @@ function animate(time){
 
 
     /*
-    elementos delante
+    Elementos delanteros
     */
 
     drawShootingStars();
+
 
     drawHearts();
 
 
     /*
-    zoom
+    Mostrar zoom
     */
 
     document.getElementById(
         "zoomText"
     ).textContent =
+
         Math.round(
-            camera.zoom*100
-        )+"%";
+            camera.zoom * 100
+        ) + "%";
 
 
     requestAnimationFrame(
         animate
     );
+
 }
 
 
 /* ==================================================
-   ZOOM
+   ZOOM IN
 ================================================== */
 
 function zoomIn(){
 
-    targetZoom=
+    targetZoom =
+
         Math.min(
-            targetZoom*1.3,
+
+            targetZoom * 1.3,
+
             6
+
         );
+
 }
+
+
+/* ==================================================
+   ZOOM OUT
+================================================== */
 
 function zoomOut(){
 
-    targetZoom=
+    targetZoom =
+
         Math.max(
-            targetZoom/1.3,
+
+            targetZoom / 1.3,
+
             .45
+
         );
+
 }
+
+
+/* ==================================================
+   REINICIAR
+================================================== */
 
 function resetView(){
 
-    targetZoom=1;
+    targetZoom = 1;
 
-    targetX=0;
+    targetX = 0;
 
-    targetY=0;
+    targetY = 0;
+
 }
 
 
@@ -1452,79 +2291,128 @@ function resetView(){
 ================================================== */
 
 canvas.addEventListener(
+
     "wheel",
-    e=>{
+
+    e => {
 
         e.preventDefault();
 
-        if(e.deltaY<0){
 
-            targetZoom=
+        if(
+            e.deltaY < 0
+        ){
+
+            targetZoom =
+
                 Math.min(
-                    targetZoom*1.15,
+
+                    targetZoom * 1.15,
+
                     6
+
                 );
 
-        }else{
+        }
 
-            targetZoom=
+        else{
+
+            targetZoom =
+
                 Math.max(
-                    targetZoom/1.15,
+
+                    targetZoom / 1.15,
+
                     .45
+
                 );
+
         }
 
     },
-    {passive:false}
+
+    {
+        passive:false
+    }
+
 );
 
 
 /* ==================================================
-   ARRASTRAR
+   ARRASTRAR CON MOUSE
 ================================================== */
 
 canvas.addEventListener(
+
     "mousedown",
-    e=>{
 
-        dragging=true;
+    e => {
 
-        lastX=e.clientX;
+        dragging = true;
 
-        lastY=e.clientY;
+        lastX =
+            e.clientX;
+
+        lastY =
+            e.clientY;
+
     }
+
 );
 
 
 window.addEventListener(
+
     "mouseup",
-    ()=>{
-        dragging=false;
+
+    () => {
+
+        dragging = false;
+
     }
+
 );
 
 
 window.addEventListener(
+
     "mousemove",
-    e=>{
 
-        mouse.x=e.clientX;
+    e => {
 
-        mouse.y=e.clientY;
+        mouse.x =
+            e.clientX;
 
-        if(!dragging)
+        mouse.y =
+            e.clientY;
+
+
+        if(
+            !dragging
+        )
             return;
 
+
         targetX +=
-            (e.clientX-lastX);
+
+            e.clientX -
+            lastX;
+
 
         targetY +=
-            (e.clientY-lastY);
 
-        lastX=e.clientX;
+            e.clientY -
+            lastY;
 
-        lastY=e.clientY;
+
+        lastX =
+            e.clientX;
+
+        lastY =
+            e.clientY;
+
     }
+
 );
 
 
@@ -1533,14 +2421,21 @@ window.addEventListener(
 ================================================== */
 
 canvas.addEventListener(
+
     "click",
-    e=>{
+
+    e => {
 
         createHeart(
+
             e.clientX,
+
             e.clientY
+
         );
+
     }
+
 );
 
 
@@ -1548,89 +2443,165 @@ canvas.addEventListener(
    TOUCH
 ================================================== */
 
-let lastDistance=null;
+let lastDistance = null;
+
 
 canvas.addEventListener(
+
     "touchmove",
-    e=>{
 
-        if(e.touches.length===1){
+    e => {
 
-            const t=e.touches[0];
+        e.preventDefault();
 
-            if(lastX!==0){
+
+        /*
+        Un dedo = mover
+        */
+
+        if(
+            e.touches.length === 1
+        ){
+
+            const t =
+                e.touches[0];
+
+
+            if(
+                lastX !== 0
+            ){
 
                 targetX +=
-                    t.clientX-lastX;
+
+                    t.clientX -
+                    lastX;
+
 
                 targetY +=
-                    t.clientY-lastY;
+
+                    t.clientY -
+                    lastY;
+
             }
 
-            lastX=t.clientX;
 
-            lastY=t.clientY;
+            lastX =
+                t.clientX;
+
+
+            lastY =
+                t.clientY;
+
         }
 
 
-        if(e.touches.length===2){
+        /*
+        Dos dedos = zoom
+        */
 
-            const a=e.touches[0];
+        if(
+            e.touches.length === 2
+        ){
 
-            const b=e.touches[1];
+            const a =
+                e.touches[0];
 
-            const dx=
-                a.clientX-b.clientX;
+            const b =
+                e.touches[1];
 
-            const dy=
-                a.clientY-b.clientY;
 
-            const distance=
+            const dx =
+                a.clientX -
+                b.clientX;
+
+
+            const dy =
+                a.clientY -
+                b.clientY;
+
+
+            const distance =
+
                 Math.sqrt(
-                    dx*dx+dy*dy
+
+                    dx*dx +
+                    dy*dy
+
                 );
 
-            if(lastDistance){
+
+            if(
+                lastDistance
+            ){
 
                 if(
-                    distance>
+                    distance >
                     lastDistance
                 ){
 
-                    targetZoom=
+                    targetZoom =
+
                         Math.min(
-                            targetZoom*1.02,
+
+                            targetZoom *
+                            1.02,
+
                             6
+
                         );
 
-                }else{
-
-                    targetZoom=
-                        Math.max(
-                            targetZoom*.98,
-                            .45
-                        );
                 }
+
+                else{
+
+                    targetZoom =
+
+                        Math.max(
+
+                            targetZoom *
+                            .98,
+
+                            .45
+
+                        );
+
+                }
+
             }
 
-            lastDistance=distance;
+
+            lastDistance =
+                distance;
+
         }
 
     },
-    {passive:false}
+
+    {
+        passive:false
+    }
+
 );
 
 
+/* ==================================================
+   TOUCH END
+================================================== */
+
 canvas.addEventListener(
+
     "touchend",
-    ()=>{
 
-        lastX=0;
+    () => {
 
-        lastY=0;
+        lastX = 0;
 
-        lastDistance=null;
+        lastY = 0;
+
+        lastDistance = null;
+
     }
+
 );
 
 
@@ -1647,10 +2618,14 @@ function fullscreen(){
         document.documentElement
             .requestFullscreen();
 
-    }else{
+    }
+
+    else{
 
         document.exitFullscreen();
+
     }
+
 }
 
 
@@ -1660,6 +2635,7 @@ function fullscreen(){
 
 resize();
 
+
 requestAnimationFrame(
     animate
 );
@@ -1667,4 +2643,5 @@ requestAnimationFrame(
 </script>
 
 </body>
+
 </html>
