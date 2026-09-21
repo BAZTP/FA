@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Flores Amarillas 🌻</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family:Arial,sans-serif;
+    touch-action:none;
+}
+
+canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+/* ======================
+   TITULO
+====================== */
+
+.title{
+    position:fixed;
+    top:5%;
+    left:50%;
+    transform:translateX(-50%);
+
+    color:#fff4a3;
+
+    font-size:clamp(22px,5vw,55px);
+
+    text-align:center;
+
+    white-space:nowrap;
+
+    z-index:20;
+
+    text-shadow:
+        0 0 5px white,
+        0 0 15px #ffe600,
+        0 0 35px #ffbb00,
+        0 0 60px #ff9900;
+
+    animation:
+        titleGlow 3s infinite alternate;
+}
+
+@keyframes titleGlow{
+
+    from{
+        opacity:.75;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
+
+/* ======================
+   MENSAJE
+====================== */
+
+.message{
+
+    position:fixed;
+
+    bottom:7%;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    color:white;
+
+    font-size:clamp(14px,3vw,24px);
+
+    text-align:center;
+
+    z-index:20;
+
+    text-shadow:
+        0 0 10px #fff,
+        0 0 20px #ffe600;
+
+    opacity:.9;
+}
+
+
+/* ======================
+   CONTROLES
+====================== */
+
+.controls{
+
+    position:fixed;
+
+    right:20px;
+    bottom:20px;
+
+    z-index:30;
+
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+    justify-content:flex-end;
+}
+
+button{
+
+    border:1px solid rgba(255,220,80,.5);
+
+    background:rgba(10,10,30,.65);
+
+    color:#fff4a3;
+
+    padding:10px 14px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    backdrop-filter:blur(8px);
+
+    font-size:14px;
+
+    box-shadow:
+        0 0 10px rgba(255,220,80,.15);
+
+    transition:.2s;
+}
+
+button:hover{
+
+    background:rgba(255,210,50,.2);
+
+    box-shadow:
+        0 0 20px rgba(255,220,80,.5);
+
+    transform:scale(1.05);
+}
+
+
+/* ======================
+   ZOOM
+====================== */
+
+.zoomInfo{
+
+    position:fixed;
+
+    left:20px;
+    bottom:20px;
+
+    z-index:30;
+
+    color:#fff;
+
+    font-size:13px;
+
+    background:rgba(0,0,20,.5);
+
+    padding:8px 12px;
+
+    border-radius:10px;
+
+    backdrop-filter:blur(5px);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="title">
+    Feliz Día de las Flores Amarillas 🌻
+</div>
+
+<div class="message">
+    Acércate al universo ✨ · Explora · Descubre 🌌
+</div>
+
+<div class="zoomInfo">
+    Zoom: <span id="zoomText">100%</span>
+</div>
+
+<div class="controls">
+
+    <button onclick="zoomIn()">＋</button>
+
+    <button onclick="zoomOut()">−</button>
+
+    <button onclick="resetView()">⟳</button>
+
+    <button onclick="fullscreen()">⛶</button>
+
+</div>
+
+<canvas id="space"></canvas>
+
+
+<script>
+
+/* ==================================================
+   CONFIGURACIÓN
+================================================== */
+
+const canvas =
+    document.getElementById("space");
+
+const ctx =
+    canvas.getContext("2d");
+
+let W;
+let H;
+
+let DPR =
+    Math.min(window.devicePixelRatio || 1,2);
+
+
+/* ==================================================
+   CÁMARA
+================================================== */
+
+let camera = {
+
+    x:0,
+
+    y:0,
+
+    zoom:1
+
+};
+
+let targetZoom = 1;
+
+let targetX = 0;
+
+let targetY = 0;
+
+
+/* ==================================================
+   ELEMENTOS
+================================================== */
+
+let stars = [];
+
+let galaxy = [];
+
+let flower = [];
+
+let smallFlowers = [];
+
+let planets = [];
+
+let shootingStars = [];
+
+let hearts = [];
+
+
+/* ==================================================
+   MOUSE
+================================================== */
+
+let mouse = {
+
+    x:0,
+
+    y:0,
+
+    active:false
+
+};
+
+
+let dragging = false;
+
+let lastX = 0;
+
+let lastY = 0;
+
+
+/* ==================================================
+   RESIZE
+================================================== */
+
+function resize(){
+
+    W = window.innerWidth;
+
+    H = window.innerHeight;
+
+    canvas.width =
+        W * DPR;
+
+    canvas.height =
+        H * DPR;
+
+    ctx.setTransform(
+        DPR,
+        0,
+        0,
+        DPR,
+        0,
+        0
+    );
+
+    createEverything();
+}
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+
+/* ==================================================
+   ESTRELLAS
+================================================== */
+
+function createStars(){
+
+    stars=[];
+
+    let amount =
+        Math.floor(
+            W*H/3500
+        );
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        stars.push({
+
+            x:
+                Math.random()*W,
+
+            y:
+                Math.random()*H,
+
+            r:
+                Math.random()*1.7+.2,
+
+            alpha:
+                Math.random(),
+
+            speed:
+                Math.random()*.04,
+
+            twinkle:
+                Math.random()*Math.PI*2
+        });
+    }
+}
+
+
+/* ==================================================
+   GALAXIA
+================================================== */
+
+function createGalaxy(){
+
+    galaxy=[];
+
+    const amount=9000;
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        let angle =
+            Math.random()*Math.PI*2;
+
+        let radius =
+            50+
+            Math.pow(
+                Math.random(),
+                .65
+            ) *
+            Math.min(W,H)*.48;
+
+        galaxy.push({
+
+            angle:angle,
+
+            radius:radius,
+
+            speed:
+                .0008+
+                Math.random()*.003,
+
+            size:
+                Math.random()*1.8+.2,
+
+            alpha:
+                Math.random()*.7+.15,
+
+            offset:
+                Math.random()*Math.PI*2
+        });
+    }
+}
+
+
+/* ==================================================
+   FLOR PRINCIPAL
+================================================== */
+
+function createFlower(){
+
+    flower=[];
+
+    const cx=0;
+
+    const cy=-H*.22;
+
+    const amount=6500;
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        let t =
+            Math.random()*
+            Math.PI*2;
+
+        /*
+        Fórmula de flor.
+
+        6 = número de pétalos
+        */
+
+        let petal =
+            Math.abs(
+                Math.cos(6*t)
+            );
+
+        let radius =
+            40+
+            petal*150+
+            Math.random()*35;
+
+        let x =
+            cx+
+            Math.cos(t)*radius;
+
+        let y =
+            cy+
+            Math.sin(t)*radius;
+
+        flower.push({
+
+            x:x,
+
+            y:y,
+
+            baseX:x,
+
+            baseY:y,
+
+            size:
+                Math.random()*2.5+.5,
+
+            alpha:
+                Math.random()*.8+.2,
+
+            phase:
+                Math.random()*Math.PI*2
+        });
+    }
+}
+
+
+/* ==================================================
+   FLORES PEQUEÑAS
+================================================== */
+
+function createSmallFlowers(){
+
+    smallFlowers=[];
+
+    for(
+        let i=0;
+        i<18;
+        i++
+    ){
+
+        let angle =
+            Math.random()*
+            Math.PI*2;
+
+        let radius =
+            250+
+            Math.random()*280;
+
+        smallFlowers.push({
+
+            x:
+                Math.cos(angle)*radius,
+
+            y:
+                H*.15+
+                Math.sin(angle)*radius*.3,
+
+            scale:
+                .4+
+                Math.random()*.8,
+
+            rotation:
+                Math.random()*Math.PI
+        });
+    }
+}
+
+
+/* ==================================================
+   PLANETAS
+================================================== */
+
+function createPlanets(){
+
+    planets=[
+
+        {
+            x:-390,
+            y:-100,
+            r:25,
+            color:"#9c6bff",
+            ring:true
+        },
+
+        {
+            x:390,
+            y:70,
+            r:17,
+            color:"#55c7ff",
+            ring:false
+        },
+
+        {
+            x:310,
+            y:-250,
+            r:12,
+            color:"#ff9d54",
+            ring:false
+        }
+
+    ];
+}
+
+
+/* ==================================================
+   CREAR TODO
+================================================== */
+
+function createEverything(){
+
+    createStars();
+
+    createGalaxy();
+
+    createFlower();
+
+    createSmallFlowers();
+
+    createPlanets();
+
+}
+
+
+/* ==================================================
+   ESTRELLAS
+================================================== */
+
+function drawStars(time){
+
+    for(
+        const s of stars
+    ){
+
+        let a =
+            .35+
+            Math.sin(
+                time*s.speed+
+                s.twinkle
+            )*.3;
+
+        ctx.beginPath();
+
+        ctx.fillStyle=
+            `rgba(255,255,255,${a})`;
+
+        ctx.arc(
+            s.x,
+            s.y,
+            s.r,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+    }
+}
+
+
+/* ==================================================
+   GALAXIA
+================================================== */
+
+function drawGalaxy(){
+
+    const cx=0;
+
+    const cy=H*.05;
+
+    for(
+        const p of galaxy
+    ){
+
+        p.angle+=p.speed;
+
+        let x=
+            cx+
+            Math.cos(p.angle)*
+            p.radius;
+
+        let y=
+            cy+
+            Math.sin(p.angle)*
+            p.radius*.35;
+
+        /*
+        reacción al mouse
+        */
+
+        let dx=x-(mouse.x-W/2);
+
+        let dy=y-(mouse.y-H/2);
+
+        let dist=
+            Math.sqrt(
+                dx*dx+
+                dy*dy
+            );
+
+        if(dist<100){
+
+            x+=
+                dx/dist*
+                20;
+
+            y+=
+                dy/dist*
+                20;
+        }
+
+        ctx.beginPath();
+
+        ctx.fillStyle=
+            `rgba(255,225,130,${p.alpha})`;
+
+        ctx.arc(
+            x,
+            y,
+            p.size,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+    }
+}
+
+
+/* ==================================================
+   AGUJERO NEGRO
+================================================== */
+
+function drawBlackHole(){
+
+    const cx=0;
+
+    const cy=H*.05;
+
+
+    /*
+    brillo exterior
+    */
+
+    const glow=
+        ctx.createRadialGradient(
+            cx,
+            cy,
+            20,
+            cx,
+            cy,
+            180
+        );
+
+    glow.addColorStop(
+        0,
+        "rgba(255,230,120,.15)"
+    );
+
+    glow.addColorStop(
+        .5,
+        "rgba(255,190,40,.08)"
+    );
+
+    glow.addColorStop(
+        1,
+        "rgba(255,150,0,0)"
+    );
+
+    ctx.fillStyle=glow;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        180,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    anillos
+    */
+
+    for(
+        let i=0;
+        i<5;
+        i++
+    ){
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+
+            cx,
+            cy,
+
+            80+i*13,
+
+            25+i*5,
+
+            0,
+
+            0,
+            Math.PI*2
+        );
+
+        ctx.strokeStyle=
+            `rgba(
+                255,
+                ${210-i*20},
+                70,
+                ${.25-i*.03}
+            )`;
+
+        ctx.lineWidth=
+            5-i*.5;
+
+        ctx.stroke();
+    }
+
+
+    /*
+    centro negro
+    */
+
+    ctx.beginPath();
+
+    ctx.fillStyle="#000";
+
+    ctx.arc(
+        cx,
+        cy,
+        43,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    borde brillante
+    */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        45,
+        0,
+        Math.PI*2
+    );
+
+    ctx.strokeStyle=
+        "rgba(255,240,150,.8)";
+
+    ctx.lineWidth=2;
+
+    ctx.stroke();
+}
+
+
+/* ==================================================
+   FLOR
+================================================== */
+
+function drawFlower(time){
+
+    for(
+        const p of flower
+    ){
+
+        let wave=
+            Math.sin(
+                time*.002+
+                p.phase
+            )*2;
+
+        ctx.beginPath();
+
+        ctx.fillStyle=
+            `rgba(
+                255,
+                225,
+                55,
+                ${p.alpha}
+            )`;
+
+        ctx.shadowBlur=7;
+
+        ctx.shadowColor=
+            "#ffd900";
+
+        ctx.arc(
+
+            p.baseX+wave,
+
+            p.baseY+wave,
+
+            p.size,
+
+            0,
+            Math.PI*2
+
+        );
+
+        ctx.fill();
+    }
+
+    ctx.shadowBlur=0;
+
+
+    /*
+    centro
+    */
+
+    const cx=0;
+
+    const cy=-H*.22;
+
+    const glow=
+        ctx.createRadialGradient(
+            cx,
+            cy,
+            0,
+            cx,
+            cy,
+            60
+        );
+
+    glow.addColorStop(
+        0,
+        "#fffbd0"
+    );
+
+    glow.addColorStop(
+        .3,
+        "#ffe83d"
+    );
+
+    glow.addColorStop(
+        1,
+        "rgba(255,210,0,0)"
+    );
+
+    ctx.fillStyle=glow;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        60,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+}
+
+
+/* ==================================================
+   FLORES PEQUEÑAS
+================================================== */
+
+function drawSmallFlowers(){
+
+    for(
+        const f of smallFlowers
+    ){
+
+        ctx.save();
+
+        ctx.translate(
+            f.x,
+            f.y
+        );
+
+        ctx.scale(
+            f.scale,
+            f.scale
+        );
+
+        /*
+        tallo
+        */
+
+        ctx.strokeStyle="#49a84a";
+
+        ctx.lineWidth=5;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            15
+        );
+
+        ctx.lineTo(
+            0,
+            60
+        );
+
+        ctx.stroke();
+
+
+        /*
+        pétalos
+        */
+
+        for(
+            let i=0;
+            i<8;
+            i++
+        ){
+
+            let a=
+                i*Math.PI/4;
+
+            ctx.save();
+
+            ctx.rotate(a);
+
+            ctx.fillStyle="#ffd83d";
+
+            ctx.beginPath();
+
+            ctx.ellipse(
+                0,
+                -18,
+                9,
+                22,
+                0,
+                0,
+                Math.PI*2
+            );
+
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+
+        /*
+        centro
+        */
+
+        ctx.fillStyle="#6b3a00";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            10,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+}
+
+
+/* ==================================================
+   PLANETAS
+================================================== */
+
+function drawPlanets(){
+
+    for(
+        const p of planets
+    ){
+
+        const gradient=
+            ctx.createRadialGradient(
+                p.x-p.r*.4,
+                p.y-p.r*.4,
+                2,
+                p.x,
+                p.y,
+                p.r
+            );
+
+        gradient.addColorStop(
+            0,
+            "#fff"
+        );
+
+        gradient.addColorStop(
+            .2,
+            p.color
+        );
+
+        gradient.addColorStop(
+            1,
+            "#050509"
+        );
+
+        ctx.fillStyle=gradient;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.r,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+
+        if(p.ring){
+
+            ctx.beginPath();
+
+            ctx.ellipse(
+                p.x,
+                p.y,
+                p.r*1.8,
+                p.r*.5,
+                -.2,
+                0,
+                Math.PI*2
+            );
+
+            ctx.strokeStyle=
+                "rgba(220,180,255,.6)";
+
+            ctx.lineWidth=3;
+
+            ctx.stroke();
+        }
+    }
+}
+
+
+/* ==================================================
+   ESTRELLAS FUGACES
+================================================== */
+
+function spawnShootingStar(){
+
+    shootingStars.push({
+
+        x:
+            Math.random()*W,
+
+        y:
+            Math.random()*H*.5,
+
+        speed:
+            8+
+            Math.random()*8,
+
+        life:1,
+
+        length:
+            60+
+            Math.random()*100
+    });
+}
+
+
+function drawShootingStars(){
+
+    if(
+        Math.random()<.008
+    ){
+
+        spawnShootingStar();
+    }
+
+
+    for(
+        let i=
+        shootingStars.length-1;
+        i>=0;
+        i--
+    ){
+
+        let s=
+            shootingStars[i];
+
+        s.x+=s.speed;
+
+        s.y+=s.speed*.35;
+
+        s.life-=.015;
+
+
+        ctx.beginPath();
+
+        const gradient=
+            ctx.createLinearGradient(
+                s.x,
+                s.y,
+                s.x-s.length,
+                s.y-s.length*.35
+            );
+
+        gradient.addColorStop(
+            0,
+            `rgba(255,255,255,${s.life})`
+        );
+
+        gradient.addColorStop(
+            1,
+            "rgba(255,255,255,0)"
+        );
+
+        ctx.strokeStyle=gradient;
+
+        ctx.lineWidth=2;
+
+        ctx.moveTo(
+            s.x,
+            s.y
+        );
+
+        ctx.lineTo(
+            s.x-s.length,
+            s.y-s.length*.35
+        );
+
+        ctx.stroke();
+
+
+        if(s.life<=0){
+
+            shootingStars.splice(i,1);
+        }
+    }
+}
+
+
+/* ==================================================
+   CORAZONES
+================================================== */
+
+function createHeart(x,y){
+
+    for(
+        let i=0;
+        i<25;
+        i++
+    ){
+
+        hearts.push({
+
+            x:x,
+
+            y:y,
+
+            vx:
+                (Math.random()-.5)*3,
+
+            vy:
+                (Math.random()-.5)*3,
+
+            life:1,
+
+            size:
+                8+
+                Math.random()*10
+        });
+    }
+}
+
+
+function drawHearts(){
+
+    for(
+        let i=hearts.length-1;
+        i>=0;
+        i--
+    ){
+
+        let h=
+            hearts[i];
+
+        h.x+=h.vx;
+
+        h.y+=h.vy;
+
+        h.vy-=.01;
+
+        h.life-=.015;
+
+
+        ctx.save();
+
+        ctx.globalAlpha=h.life;
+
+        ctx.fillStyle="#ffd83d";
+
+        ctx.font=
+            `${h.size}px Arial`;
+
+        ctx.fillText(
+            "♥",
+            h.x,
+            h.y
+        );
+
+        ctx.restore();
+
+
+        if(
+            h.life<=0
+        ){
+
+            hearts.splice(i,1);
+        }
+    }
+}
+
+
+/* ==================================================
+   TRANSFORMACIÓN DE CÁMARA
+================================================== */
+
+function applyCamera(){
+
+    ctx.translate(
+        W/2+camera.x,
+        H/2+camera.y
+    );
+
+    ctx.scale(
+        camera.zoom,
+        camera.zoom
+    );
+
+}
+
+
+/* ==================================================
+   ANIMACIÓN
+================================================== */
+
+function animate(time){
+
+    /*
+    fondo
+    */
+
+    ctx.setTransform(
+        DPR,
+        0,
+        0,
+        DPR,
+        0,
+        0
+    );
+
+    ctx.fillStyle="#02020d";
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    /*
+    estrellas
+    */
+
+    drawStars(time);
+
+
+    /*
+    cámara
+    */
+
+    ctx.save();
+
+    camera.zoom +=
+        (targetZoom-camera.zoom)*.08;
+
+    camera.x +=
+        (targetX-camera.x)*.08;
+
+    camera.y +=
+        (targetY-camera.y)*.08;
+
+    applyCamera();
+
+
+    /*
+    universo
+    */
+
+    drawGalaxy();
+
+    drawPlanets();
+
+    drawBlackHole();
+
+    drawFlower(time);
+
+    drawSmallFlowers();
+
+
+    ctx.restore();
+
+
+    /*
+    elementos delante
+    */
+
+    drawShootingStars();
+
+    drawHearts();
+
+
+    /*
+    zoom
+    */
+
+    document.getElementById(
+        "zoomText"
+    ).textContent =
+        Math.round(
+            camera.zoom*100
+        )+"%";
+
+
+    requestAnimationFrame(
+        animate
+    );
+}
+
+
+/* ==================================================
+   ZOOM
+================================================== */
+
+function zoomIn(){
+
+    targetZoom=
+        Math.min(
+            targetZoom*1.3,
+            6
+        );
+}
+
+function zoomOut(){
+
+    targetZoom=
+        Math.max(
+            targetZoom/1.3,
+            .45
+        );
+}
+
+function resetView(){
+
+    targetZoom=1;
+
+    targetX=0;
+
+    targetY=0;
+}
+
+
+/* ==================================================
+   RUEDA DEL MOUSE
+================================================== */
+
+canvas.addEventListener(
+    "wheel",
+    e=>{
+
+        e.preventDefault();
+
+        if(e.deltaY<0){
+
+            targetZoom=
+                Math.min(
+                    targetZoom*1.15,
+                    6
+                );
+
+        }else{
+
+            targetZoom=
+                Math.max(
+                    targetZoom/1.15,
+                    .45
+                );
+        }
+
+    },
+    {passive:false}
+);
+
+
+/* ==================================================
+   ARRASTRAR
+================================================== */
+
+canvas.addEventListener(
+    "mousedown",
+    e=>{
+
+        dragging=true;
+
+        lastX=e.clientX;
+
+        lastY=e.clientY;
+    }
+);
+
+
+window.addEventListener(
+    "mouseup",
+    ()=>{
+        dragging=false;
+    }
+);
+
+
+window.addEventListener(
+    "mousemove",
+    e=>{
+
+        mouse.x=e.clientX;
+
+        mouse.y=e.clientY;
+
+        if(!dragging)
+            return;
+
+        targetX +=
+            (e.clientX-lastX);
+
+        targetY +=
+            (e.clientY-lastY);
+
+        lastX=e.clientX;
+
+        lastY=e.clientY;
+    }
+);
+
+
+/* ==================================================
+   CLICK
+================================================== */
+
+canvas.addEventListener(
+    "click",
+    e=>{
+
+        createHeart(
+            e.clientX,
+            e.clientY
+        );
+    }
+);
+
+
+/* ==================================================
+   TOUCH
+================================================== */
+
+let lastDistance=null;
+
+canvas.addEventListener(
+    "touchmove",
+    e=>{
+
+        if(e.touches.length===1){
+
+            const t=e.touches[0];
+
+            if(lastX!==0){
+
+                targetX +=
+                    t.clientX-lastX;
+
+                targetY +=
+                    t.clientY-lastY;
+            }
+
+            lastX=t.clientX;
+
+            lastY=t.clientY;
+        }
+
+
+        if(e.touches.length===2){
+
+            const a=e.touches[0];
+
+            const b=e.touches[1];
+
+            const dx=
+                a.clientX-b.clientX;
+
+            const dy=
+                a.clientY-b.clientY;
+
+            const distance=
+                Math.sqrt(
+                    dx*dx+dy*dy
+                );
+
+            if(lastDistance){
+
+                if(
+                    distance>
+                    lastDistance
+                ){
+
+                    targetZoom=
+                        Math.min(
+                            targetZoom*1.02,
+                            6
+                        );
+
+                }else{
+
+                    targetZoom=
+                        Math.max(
+                            targetZoom*.98,
+                            .45
+                        );
+                }
+            }
+
+            lastDistance=distance;
+        }
+
+    },
+    {passive:false}
+);
+
+
+canvas.addEventListener(
+    "touchend",
+    ()=>{
+
+        lastX=0;
+
+        lastY=0;
+
+        lastDistance=null;
+    }
+);
+
+
+/* ==================================================
+   PANTALLA COMPLETA
+================================================== */
+
+function fullscreen(){
+
+    if(
+        !document.fullscreenElement
+    ){
+
+        document.documentElement
+            .requestFullscreen();
+
+    }else{
+
+        document.exitFullscreen();
+    }
+}
+
+
+/* ==================================================
+   INICIO
+================================================== */
+
+resize();
+
+requestAnimationFrame(
+    animate
+);
+
+</script>
+
+</body>
+</html>
